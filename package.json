@@ -9,14 +9,10 @@
         "vue3"
     ],
     "license": "MIT",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "type": "module",
-    "exports": {
-        ".": {
-            "import": "./dist/index.js",
-            "require": "./dist/index.cjs"
-        }
-    },
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
     "types": "./dist/SmartCaptcha.d.ts",
     "files": [
         "dist"
