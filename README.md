@@ -83,4 +83,10 @@ Open-source under [MIT license](LICENSE)
 
 ## Testing
 
-**TODO**
+We are using [Vitest](https://vitest.dev/guide/)
+
+> Help wanted to cover properties were passed to `window.smartCaptcha` object
+
+```sh
+pnpm test
+```
