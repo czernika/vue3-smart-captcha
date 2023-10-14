@@ -1,0 +1,49 @@
+name: Run tests
+
+on:
+  pull_request:
+    types:
+      - opened
+  push:
+    branches:
+      - 'master'
+    paths:
+      - '**.vue'
+      - '**.ts'
+
+jobs:
+  js-tests:
+    name: Run JS tests
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+  
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # see https://github.com/pnpm/action-setup
+      - name: Prepare pnpm test environment
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: echo "dir=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Running tests
+        run: pnpm test
