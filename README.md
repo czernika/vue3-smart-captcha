@@ -63,11 +63,11 @@ Only `sitekey` is required
 |----------------------|-----------------------------|----------------------------------------------------------------------------------------------|
 | **sitekey**          |  -                          | `string`                                                                                     |
 | callback             | `undefined`                 | `(token: string) => void`                                                                    |
-| hl                   | `window.navigator.language` | `'ru' | 'en' | 'be' | 'kk' | 'tt' | 'uk' | 'uz' | 'tr'`                                      |
+| hl                   | `window.navigator.language` | `'ru', 'en', 'be', 'kk', 'tt', 'uk', 'uz', 'tr'`                                             |
 | test                 | `false`                     | `boolean`                                                                                    |
 | webview              | `false`                     | `boolean`                                                                                    |
 | invisible            | `false`                     | `boolean`                                                                                    |
-| shieldPosition       | `center-right`              | `'top-left' | 'center-left' | 'bottom-left' | 'top-right' | 'center-right' | 'bottom-right'` | 
+| shieldPosition       | `center-right`              | `'top-left', 'center-left', 'bottom-left', 'top-right', 'center-right', 'bottom-right'`      | 
 | hideShield           | `false`                     | `boolean`                                                                                    |
 | on-success           | `undefined`                 | `(token: string) => void`                                                                    |
 | on-network-error     | `undefined`                 | `() => void`                                                                                 |
