@@ -1,12 +1,12 @@
 <template>
     <div
         ref="container"
-        class="smart-captcha"
+        :class="{'smart-captcha': !isInvisible}"
     />
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { YANDEX_SMART_CAPTCHA_SCRIPT_LINK } from '@/utils/captcha-data'
 import type { RenderParams, Subscriptions, WidgetId } from '@/types/smartcaptcha'
 
@@ -18,6 +18,8 @@ onMounted(() => {
     loadWidgetScript()
     initWidget()
 })
+
+const isInvisible = computed(() => props.invisible === true)
 
 const loadWidgetScript = () => {
     const smartCaptchaScript = document.createElement('script')
