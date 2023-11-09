@@ -80,7 +80,28 @@ Basically it gets every parameter of `window.smartCaptcha` [object](https://clou
 
 ### Do not load widget
 
-You may add script tag `<script src="https://smartcaptcha.yandexcloud.net/captcha.js?render=onload" defer></script>` yourself or using Nuxt config. This way you don't need to render widget script itself. Just set `:load-widget="false"` to disable script loading
+You may add script tag `<script src="https://smartcaptcha.yandexcloud.net/captcha.js?render=onload" defer></script>` yourself or using Nuxt config like
+
+```js
+export default defineNuxtConfig({
+  app: {
+    head: {
+      script: [
+        {
+          src: 'https://smartcaptcha.yandexcloud.net/captcha.js?render=onload',
+          defer: true,
+        }
+      ]
+    }
+  }
+})
+```
+
+This way you don't need to render widget script itself. Just set `:load-widget="false"` to disable script loading
+
+```html
+<SmartCaptcha sitekey="sitekey" :load-widget="false" />
+```
 
 ## License
 

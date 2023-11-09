@@ -36,7 +36,15 @@ const loadWidgetScript = () => {
 }
 
 const initWidget = () => {
+    let attempt = 0 // allow max 10 connection attempts
     const isSmartCaptchaLoaded = setInterval(() => {
+        if (++attempt === 10) {
+            // TODO describe error
+            
+            clearInterval(isSmartCaptchaLoaded)
+            return
+        }
+
         if (window.smartCaptcha !== undefined) {
             clearInterval(isSmartCaptchaLoaded)
 
