@@ -62,6 +62,7 @@ Only `sitekey` is required
 | Property             | Default                     | Type                                                                                         |
 |----------------------|-----------------------------|----------------------------------------------------------------------------------------------|
 | **sitekey**          |  -                          | `string`                                                                                     |
+| loadWidget           | `true`                      | `boolean`                                                                    |
 | callback             | `undefined`                 | `(token: string) => void`                                                                    |
 | hl                   | `window.navigator.language` | `'ru', 'en', 'be', 'kk', 'tt', 'uk', 'uz', 'tr'`                                             |
 | test                 | `false`                     | `boolean`                                                                                    |
@@ -76,6 +77,10 @@ Only `sitekey` is required
 | on-token-expired     | `undefined`                 | `() => void`                                                                                 |
 
 Basically it gets every parameter of `window.smartCaptcha` [object](https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#methods) plus 5 callbacks for every [subscription](https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#subscribe) events named as `on` + event name in camelCase ('success' => 'onSuccess', 'network-error' => 'onNetworkError', etc)
+
+### Do not load widget
+
+You may add script tag `<script src="https://smartcaptcha.yandexcloud.net/captcha.js?render=onload" defer></script>` yourself or using Nuxt config. This way you don't need to render widget script itself. Just set `:load-widget="false"` to disable script loading
 
 ## License
 

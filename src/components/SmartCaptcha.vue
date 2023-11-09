@@ -8,16 +8,23 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import { YANDEX_SMART_CAPTCHA_SCRIPT_LINK } from '@/utils/captcha-data'
-import type { RenderParams, SubscribeEvent, Subscriptions, WidgetId } from '@/types/smartcaptcha'
+import type { RenderParams, Subscriptions, WidgetId } from '@/types/smartcaptcha'
 
 const container = ref<HTMLDivElement>()
 
-const props = defineProps<RenderParams & Subscriptions>()
+const props = withDefaults(defineProps<RenderParams & Subscriptions>(), {
+    loadWidget: true,
+})
 
 onMounted(() => {
-    loadWidgetScript()
+    if (widgetNeedsToBeLoaded.value) {
+        loadWidgetScript()
+    }
+
     initWidget()
 })
+
+const widgetNeedsToBeLoaded = computed(() => props.loadWidget)
 
 const isInvisible = computed(() => props.invisible === true)
 

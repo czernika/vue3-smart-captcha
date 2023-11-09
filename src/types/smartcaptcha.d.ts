@@ -50,6 +50,7 @@ export interface RenderParams {
     invisible?: boolean,
     shieldPosition?: ShieldPosition,
     hideShield?: boolean,
+    loadWidget?: boolean,
 }
 
 /**
