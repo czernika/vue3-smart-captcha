@@ -1,8 +1,8 @@
-import type { App } from 'vue'
+import type { Plugin } from 'vue'
 import SmartCaptcha from '@/components/SmartCaptcha.vue'
 
-const SmartCaptchaPlugin = {
-    install: (app: App) => {
+const SmartCaptchaPlugin: Plugin = {
+    install: (app) => {
         app.component('SmartCaptcha', SmartCaptcha)
     },
 }

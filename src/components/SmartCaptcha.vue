@@ -8,7 +8,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import { YANDEX_SMART_CAPTCHA_SCRIPT_LINK } from '@/utils/captcha-data'
-import type { RenderParams, Subscriptions, WidgetId } from '@/types/smartcaptcha'
+import type { RenderParams, SubscribeEvent, Subscriptions, WidgetId } from '@/types/smartcaptcha'
 
 const container = ref<HTMLDivElement>()
 
@@ -29,9 +29,9 @@ const loadWidgetScript = () => {
 }
 
 const initWidget = () => {
-    const checkIfSmartCaptchaIsLoaded = setInterval(() => {
+    const isSmartCaptchaLoaded = setInterval(() => {
         if (window.smartCaptcha !== undefined) {
-            clearInterval(checkIfSmartCaptchaIsLoaded)
+            clearInterval(isSmartCaptchaLoaded)
 
             const widgetId = window.smartCaptcha.render((container.value) as HTMLDivElement, props)
 

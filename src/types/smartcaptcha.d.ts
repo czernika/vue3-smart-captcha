@@ -12,9 +12,23 @@ export type WidgetId = number
 
 export type Token = string
 
-export type SupportedLangs = 'ru' | 'en' | 'be' | 'kk' | 'tt' | 'uk' | 'uz' | 'tr'
+export type SupportedLangs =
+    | 'ru'
+    | 'en'
+    | 'be'
+    | 'kk'
+    | 'tt'
+    | 'uk'
+    | 'uz'
+    | 'tr'
 
-export type ShieldPosition = 'top-left' | 'center-left' | 'bottom-left' | 'top-right' | 'center-right' | 'bottom-right'
+export type ShieldPosition =
+    | 'top-left'
+    | 'center-left'
+    | 'bottom-left'
+    | 'top-right'
+    | 'center-right'
+    | 'bottom-right'
 
 export interface Subscriptions {
     onChallengeVisible?: () => void,
