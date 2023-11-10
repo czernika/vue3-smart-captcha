@@ -8,12 +8,13 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import { YANDEX_SMART_CAPTCHA_SCRIPT_LINK } from '@/utils/captcha-data'
-import type { RenderParams, Subscriptions, WidgetId } from '@/types/smartcaptcha'
+import type { RenderParams, CaptchaProps, Subscriptions, WidgetId } from '@/types/smartcaptcha'
 
 const container = ref<HTMLDivElement>()
 
-const props = withDefaults(defineProps<RenderParams & Subscriptions>(), {
+const props = withDefaults(defineProps<RenderParams & CaptchaProps & Subscriptions>(), {
     loadWidget: true,
+    timeout: 2000,
 })
 
 onMounted(() => {
@@ -35,11 +36,17 @@ const loadWidgetScript = () => {
     document.head.appendChild(smartCaptchaScript)
 }
 
+const totalAttempts = 10
+
 const initWidget = () => {
     let attempt = 0 // allow max 10 connection attempts
     const isSmartCaptchaLoaded = setInterval(() => {
-        if (++attempt === 10) {
-            // TODO describe error
+        if (++attempt === totalAttempts) {
+            /* eslint-disable no-console */
+            console.warn(
+                `Captcha cannot be initialized for ${props.timeout}ms. Make sure widget script is loaded`
+            )
+            /* eslint-enable no-console */
             
             clearInterval(isSmartCaptchaLoaded)
             return
@@ -48,11 +55,20 @@ const initWidget = () => {
         if (window.smartCaptcha !== undefined) {
             clearInterval(isSmartCaptchaLoaded)
 
-            const widgetId = window.smartCaptcha.render((container.value) as HTMLDivElement, props)
+            const widgetId = window.smartCaptcha.render((container.value) as HTMLDivElement, {
+                sitekey: props.sitekey,
+                callback: props.callback,
+                hl: props.hl,
+                test: props.test,
+                webview: props.webview,
+                invisible: props.invisible,
+                shieldPosition: props.shieldPosition,
+                hideShield: props.hideShield,
+            })
 
             subscribe(widgetId)           
         }
-    }, 200)
+    }, props.timeout / totalAttempts)
 }
 
 const subscribe = (widgetId: WidgetId) => {

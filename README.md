@@ -62,7 +62,8 @@ Only `sitekey` is required
 | Property             | Default                     | Type                                                                                         |
 |----------------------|-----------------------------|----------------------------------------------------------------------------------------------|
 | **sitekey**          |  -                          | `string`                                                                                     |
-| loadWidget           | `true`                      | `boolean`                                                                    |
+| loadWidget           | `true`                      | `boolean`                                                                                    |
+| timeout              | `2000`                      | `number`                                                                                     |
 | callback             | `undefined`                 | `(token: string) => void`                                                                    |
 | hl                   | `window.navigator.language` | `'ru', 'en', 'be', 'kk', 'tt', 'uk', 'uz', 'tr'`                                             |
 | test                 | `false`                     | `boolean`                                                                                    |
@@ -102,6 +103,8 @@ This way you don't need to render widget script itself. Just set `:load-widget="
 ```html
 <SmartCaptcha sitekey="sitekey" :load-widget="false" />
 ```
+
+You can specify amount of time in `timeout` how much script will try to resolve `window.smartCaptcha` object before give up
 
 ## License
 

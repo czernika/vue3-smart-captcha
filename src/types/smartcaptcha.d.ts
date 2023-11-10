@@ -50,7 +50,11 @@ export interface RenderParams {
     invisible?: boolean,
     shieldPosition?: ShieldPosition,
     hideShield?: boolean,
+}
+
+export interface CaptchaProps {
     loadWidget?: boolean,
+    timeout?: number
 }
 
 /**
