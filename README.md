@@ -59,23 +59,23 @@ You may add `style="height: 100px"` in order to [prevent](https://cloud.yandex.r
 
 Only `sitekey` is required
 
-| Property             | Default                     | Type                                                                                         |
-|----------------------|-----------------------------|----------------------------------------------------------------------------------------------|
-| **sitekey**          |  -                          | `string`                                                                                     |
-| loadWidget           | `true`                      | `boolean`                                                                                    |
-| timeout              | `2000`                      | `number`                                                                                     |
-| callback             | `undefined`                 | `(token: string) => void`                                                                    |
-| hl                   | `window.navigator.language` | `'ru', 'en', 'be', 'kk', 'tt', 'uk', 'uz', 'tr'`                                             |
-| test                 | `false`                     | `boolean`                                                                                    |
-| webview              | `false`                     | `boolean`                                                                                    |
-| invisible            | `false`                     | `boolean`                                                                                    |
-| shieldPosition       | `center-right`              | `'top-left', 'center-left', 'bottom-left', 'top-right', 'center-right', 'bottom-right'`      | 
-| hideShield           | `false`                     | `boolean`                                                                                    |
-| on-success           | `undefined`                 | `(token: string) => void`                                                                    |
-| on-network-error     | `undefined`                 | `() => void`                                                                                 |
-| on-challenge-visible | `undefined`                 | `() => void`                                                                                 |
-| on-challenge-hidden  | `undefined`                 | `() => void`                                                                                 |
-| on-token-expired     | `undefined`                 | `() => void`                                                                                 |
+| Property             | Default                     | Description                                                                | Type                                                                                         |
+|----------------------|-----------------------------|----------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
+| **sitekey**          |  -                          | Public site key (find it at Yandex console panel)                          | `string`                                                                                     |
+| loadWidget           | `true`                      | Load widget script or not (if not you should provide source script itself) | `boolean`                                                                                    |
+| timeout              | `2000`                      | How much time will component looking for smartCaptcha object to initialize | `number`                                                                                     |
+| callback             | `undefined`                 | [Render property (1)](https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#render)                                                                          | `(token: string) => void`                                                                    |
+| hl                   | `window.navigator.language` | See [1]                                                                          | `'ru', 'en', 'be', 'kk', 'tt', 'uk', 'uz', 'tr'`                                             |
+| test                 | `false`                     | See [1]                                                                           | `boolean`                                                                                    |
+| webview              | `false`                     | See [1]                                                                           | `boolean`                                                                                    |
+| invisible            | `false`                     | See [1]                                                                           | `boolean`                                                                                    |
+| shieldPosition       | `center-right`              | See [1]                                                                           | `'top-left', 'center-left', 'bottom-left', 'top-right', 'center-right', 'bottom-right'`      | 
+| hideShield           | `false`                     | See [1]                                                                           | `boolean`                                                                                    |
+| on-success           | `undefined`                 | [Subscription event (2)](https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#render)                                                         | `(token: string) => void`                                                                    |
+| on-network-error     | `undefined`                 | See [2]                                                          | `() => void`                                                                                 |
+| on-challenge-visible | `undefined`                 | See [2]                                                          | `() => void`                                                                                 |
+| on-challenge-hidden  | `undefined`                 | See [2]                                                          | `() => void`                                                                                 |
+| on-token-expired     | `undefined`                 | See [2]                                                          | `() => void`                                                                                 |
 
 Basically it gets every parameter of `window.smartCaptcha` [object](https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#methods) plus 5 callbacks for every [subscription](https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#subscribe) events named as `on` + event name in camelCase ('success' => 'onSuccess', 'network-error' => 'onNetworkError', etc)
 
