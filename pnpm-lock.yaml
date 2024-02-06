@@ -26,8 +26,8 @@ devDependencies:
     specifier: ^2.4.1
     version: 2.4.3(vue@3.4.15)
   '@vue/tsconfig':
-    specifier: ^0.4.0
-    version: 0.4.0
+    specifier: ^0.5.1
+    version: 0.5.1
   eslint:
     specifier: ^8.53.0
     version: 8.56.0
@@ -879,8 +879,8 @@ packages:
       vue-component-type-helpers: 1.8.24
     dev: true
 
-  /@vue/tsconfig@0.4.0:
-    resolution: {integrity: sha512-CPuIReonid9+zOG/CGTT05FXrPYATEqoDGNrEaqS4hwcw5BUNM2FguC0mOwJD4Jr16UpRVl9N0pY3P+srIbqmg==}
+  /@vue/tsconfig@0.5.1:
+    resolution: {integrity: sha512-VcZK7MvpjuTPx2w6blwnwZAu5/LgBUtejFOi3pPGQFXQN5Ela03FUtd2Qtg4yWGGissVL0dr6Ro1LfOFh+PCuQ==}
     dev: true
 
   /abbrev@1.1.1:
