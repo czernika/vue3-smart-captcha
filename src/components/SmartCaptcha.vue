@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { YANDEX_SMART_CAPTCHA_SCRIPT_LINK } from '@/utils/captcha-data'
 import type { RenderParams, CaptchaProps, Subscriptions, WidgetId } from '@/types/smartcaptcha'
 
@@ -23,6 +23,12 @@ onMounted(() => {
     }
 
     initWidget()
+})
+
+onUnmounted(() => {
+    if (widgetNeedsToBeLoaded.value) {
+        document.querySelector(`script[src="${YANDEX_SMART_CAPTCHA_SCRIPT_LINK}?render=onload"]`)?.remove()
+    }
 })
 
 const widgetNeedsToBeLoaded = computed(() => props.loadWidget)
