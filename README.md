@@ -192,3 +192,7 @@ Open-source under [MIT license](LICENSE)
 We are using [Vitest](https://vitest.dev/guide/)
 
 > Help wanted to cover properties were passed to `window.smartCaptcha` object
+
+## TODO
+
+- [ ] - move to composable in v1

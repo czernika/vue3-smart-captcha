@@ -21,12 +21,16 @@ const emits = defineEmits<{
     initialized: [widgetId: WidgetId]
 }>()
 
+const appended = ref(false)
+
 onMounted(() => {
-    if (widgetNeedsToBeLoaded.value) {
+    if (widgetNeedsToBeLoaded.value && ! appended.value) {
         loadWidgetScript()
     }
 
-    initWidget()
+    if (! appended.value) {
+        initWidget()
+    }
 })
 
 onUnmounted(() => {
@@ -44,6 +48,8 @@ const loadWidgetScript = () => {
     smartCaptchaScript.setAttribute('src', `${YANDEX_SMART_CAPTCHA_SCRIPT_LINK}?render=onload`)
     smartCaptchaScript.setAttribute('defer', 'true')
     document.head.appendChild(smartCaptchaScript)
+
+    appended.value = true
 }
 
 const totalAttempts = 10
