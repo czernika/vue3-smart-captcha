@@ -1,11 +1,12 @@
 import type { Plugin } from 'vue'
 import SmartCaptcha from '@/components/SmartCaptcha.vue'
-import { 
-    execute,
-    destroy,
-    reset,
-    getResponse,
-} from '@/utils/captcha-data'
+import { useSmartCaptcha } from '@/composables/useSmartCaptcha'
+import type {
+    SmartCaptcha as WindowSmartCaptcha,
+    WidgetId,
+    Token,
+} from '@/types/smartcaptcha'
+
 
 const SmartCaptchaPlugin: Plugin = {
     install: (app) => {
@@ -13,11 +14,13 @@ const SmartCaptchaPlugin: Plugin = {
     },
 }
 
+export default SmartCaptchaPlugin
+
 export {
     SmartCaptchaPlugin,
     SmartCaptcha,
-    execute,
-    destroy,
-    reset,
-    getResponse,
+    useSmartCaptcha,
+    type WindowSmartCaptcha,
+    type WidgetId,
+    type Token,
 }

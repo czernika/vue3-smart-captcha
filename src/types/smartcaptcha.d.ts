@@ -7,12 +7,13 @@ export type SubscribeEvent =
     | 'network-error'
     | 'success'
     | 'token-expired'
+    | 'javascript-error'
 
 export type WidgetId = number
 
 export type Token = string
 
-export type SupportedLangs =
+export type SupportedLang =
     | 'ru'
     | 'en'
     | 'be'
@@ -30,21 +31,13 @@ export type ShieldPosition =
     | 'center-right'
     | 'bottom-right'
 
-export interface Subscriptions {
-    onChallengeVisible?: () => void,
-    onChallengeHidden?: () => void,
-    onNetworkError?: () => void,
-    onSuccess?: (token: Token) => void,
-    onTokenExpired?: () => void,
-} 
-
 /**
  * @link https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#render
  */
-export interface RenderParams {
+export interface SmartCaptchaRenderProps {
     sitekey: string,
     callback?: (token: Token) => void,
-    hl?: SupportedLangs,
+    hl?: SupportedLang,
     test?: boolean,
     webview?: boolean,
     invisible?: boolean,
@@ -52,10 +45,9 @@ export interface RenderParams {
     hideShield?: boolean,
 }
 
-export interface CaptchaProps {
-    loadWidget?: boolean,
-    timeout?: number
-}
+export type BaseEventCallback = () => void
+export type SuccessEventCallback = (token: Token) => void
+export type JavascriptErrorEventCallback = (error: { filename: string, message: string, col: number, line: number }) => void
 
 /**
  * @link https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#methods
@@ -63,7 +55,7 @@ export interface CaptchaProps {
 export interface SmartCaptcha {
     render: (
         container: HTMLElement | string,
-        params: RenderParams
+        params: SmartCaptchaRenderProps
     ) => WidgetId
 
     getResponse: (widgetId?: WidgetId) => Token
@@ -74,7 +66,7 @@ export interface SmartCaptcha {
 
     destroy: (widgetId?: WidgetId) => void
     
-    // With 'success' subscription event token passed into callback
-    subscribe(widgetId: WidgetId, event: Extract<SubscribeEvent, 'success'>, callback: (token: Token) => void): () => void
-    subscribe(widgetId: WidgetId, event: Exclude<SubscribeEvent, 'success'>, callback: () => void): () => void
+    subscribe(widgetId: WidgetId, event: 'success', callback: SuccessEventCallback): () => void
+    subscribe(widgetId: WidgetId, event: 'javascript-error', callback: JavascriptErrorEventCallback): () => void
+    subscribe(widgetId: WidgetId, event: Exclude<SubscribeEvent, 'success', 'javascript-error'>, callback: BaseEventCallback): () => void
 }

@@ -1,111 +1,73 @@
 <template>
-    <div
-        ref="container"
-        :class="{'smart-captcha': !isInvisible}"
-    />
+    <div ref="container" />
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { YANDEX_SMART_CAPTCHA_SCRIPT_LINK } from '@/utils/captcha-data'
-import type { RenderParams, CaptchaProps, Subscriptions, WidgetId } from '@/types/smartcaptcha'
+import { useSmartCaptcha } from '@/composables/useSmartCaptcha'
+import type {
+    BaseEventCallback,
+    JavascriptErrorEventCallback,
+    SmartCaptchaRenderProps,
+    SuccessEventCallback,
+} from '@/types/smartcaptcha'
+import { ref } from 'vue'
 
 const container = ref<HTMLDivElement>()
 
-const props = withDefaults(defineProps<RenderParams & CaptchaProps & Subscriptions>(), {
+type SubscribeEventProps = {
+    onChallengeVisible?: BaseEventCallback
+    onChallengeHidden?: BaseEventCallback
+    onNetworkError?: BaseEventCallback
+    onTokenExpired?: BaseEventCallback
+    onSuccess?: SuccessEventCallback
+    onJavascriptError?: JavascriptErrorEventCallback
+}
+type SmartCaptchaComponentProps = SmartCaptchaRenderProps & SubscribeEventProps & {
+    loadWidget?: boolean
+}
+const props = withDefaults(defineProps<SmartCaptchaComponentProps>(), {
     loadWidget: true,
-    timeout: 2000,
+
+    onChallengeVisible: undefined,
+    onChallengeHidden: undefined,
+    onNetworkError: undefined,
+    onTokenExpired: undefined,
+    onSuccess: undefined,
+    onJavascriptError: undefined,
 })
 
-const emits = defineEmits<{
-    initialized: [widgetId: WidgetId]
-}>()
+const { subscribeTo } = useSmartCaptcha(container, {
+    sitekey: props.sitekey,
+    callback: props.callback,
+    hl: props.hl,
+    test: props.test,
+    webview: props.webview,
+    invisible: props.invisible,
+    shieldPosition: props.shieldPosition,
+    hideShield: props.hideShield,
+}, props.loadWidget)
 
-const appended = ref(false)
-
-onMounted(() => {
-    if (widgetNeedsToBeLoaded.value && ! appended.value) {
-        loadWidgetScript()
-    }
-
-    initWidget()
-})
-
-onUnmounted(() => {
-    if (widgetNeedsToBeLoaded.value) {
-        document.querySelector(`script[src="${YANDEX_SMART_CAPTCHA_SCRIPT_LINK}?render=onload"]`)?.remove()
-    }
-})
-
-const widgetNeedsToBeLoaded = computed(() => props.loadWidget)
-
-const isInvisible = computed(() => props.invisible === true)
-
-const loadWidgetScript = () => {
-    const smartCaptchaScript = document.createElement('script')
-    smartCaptchaScript.setAttribute('src', `${YANDEX_SMART_CAPTCHA_SCRIPT_LINK}?render=onload`)
-    smartCaptchaScript.setAttribute('defer', 'true')
-    document.head.appendChild(smartCaptchaScript)
-
-    appended.value = true
+if (props.onChallengeHidden) {
+    subscribeTo('challenge-hidden', props.onChallengeHidden)
 }
 
-const totalAttempts = 10
-
-const initWidget = () => {
-    let attempt = 0 // allow max 10 connection attempts
-    const isSmartCaptchaLoaded = setInterval(() => {
-        if (++attempt === totalAttempts) {
-            /* eslint-disable no-console */
-            console.warn(
-                `Captcha cannot be initialized for ${props.timeout}ms. Make sure widget script is loaded`
-            )
-            /* eslint-enable no-console */
-            
-            clearInterval(isSmartCaptchaLoaded)
-            return
-        }
-
-        if (window.smartCaptcha !== undefined) {
-            clearInterval(isSmartCaptchaLoaded)
-
-            const widgetId = window.smartCaptcha.render((container.value) as HTMLDivElement, {
-                sitekey: props.sitekey,
-                callback: props.callback,
-                hl: props.hl,
-                test: props.test,
-                webview: props.webview,
-                invisible: props.invisible,
-                shieldPosition: props.shieldPosition,
-                hideShield: props.hideShield,
-            })
-
-            subscribe(widgetId)
-
-            emits('initialized', widgetId)
-        }
-    }, props.timeout / totalAttempts)
+if (props.onChallengeVisible) {
+    subscribeTo('challenge-visible', props.onChallengeVisible)
 }
 
-const subscribe = (widgetId: WidgetId) => {
-    if (props.onChallengeHidden) {
-        window.smartCaptcha.subscribe(widgetId, 'challenge-hidden', props.onChallengeHidden)
-    }
+if (props.onJavascriptError) {
+    subscribeTo('javascript-error', props.onJavascriptError)
+}
 
-    if (props.onChallengeVisible) {
-        window.smartCaptcha.subscribe(widgetId, 'challenge-visible', props.onChallengeVisible)
-    }
+if (props.onNetworkError) {
+    subscribeTo('network-error', props.onNetworkError)
+}
 
-    if (props.onNetworkError) {
-        window.smartCaptcha.subscribe(widgetId, 'network-error', props.onNetworkError)
-    }
+if (props.onSuccess) {
+    subscribeTo('success', props.onSuccess)
+}
 
-    if (props.onSuccess) {
-        window.smartCaptcha.subscribe(widgetId, 'success', props.onSuccess)
-    }
-
-    if (props.onTokenExpired) {
-        window.smartCaptcha.subscribe(widgetId, 'token-expired', props.onTokenExpired)
-    }
+if (props.onTokenExpired) {
+    subscribeTo('token-expired', props.onTokenExpired)
 }
 </script>
