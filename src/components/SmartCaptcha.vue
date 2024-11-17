@@ -5,28 +5,21 @@
 <script lang="ts" setup>
 import { useSmartCaptcha } from '@/composables/useSmartCaptcha'
 import type {
-    BaseEventCallback,
-    JavascriptErrorEventCallback,
+    JavascriptError,
     SmartCaptchaRenderProps,
-    SuccessEventCallback,
+    Token,
 } from '@/types/smartcaptcha'
 import { ref } from 'vue'
 
 const container = ref<HTMLDivElement>()
 
-type SubscribeEventProps = {
-    onChallengeVisible?: BaseEventCallback
-    onChallengeHidden?: BaseEventCallback
-    onNetworkError?: BaseEventCallback
-    onTokenExpired?: BaseEventCallback
-    onSuccess?: SuccessEventCallback
-    onJavascriptError?: JavascriptErrorEventCallback
-}
-type SmartCaptchaComponentProps = SmartCaptchaRenderProps & SubscribeEventProps & {
+type SmartCaptchaComponentProps = SmartCaptchaRenderProps & {
     loadWidget?: boolean
+    timeout?: number
 }
 const props = withDefaults(defineProps<SmartCaptchaComponentProps>(), {
     loadWidget: true,
+    timeout: 2000,
 
     onChallengeVisible: undefined,
     onChallengeHidden: undefined,
@@ -45,29 +38,38 @@ const { subscribeTo } = useSmartCaptcha(container, {
     invisible: props.invisible,
     shieldPosition: props.shieldPosition,
     hideShield: props.hideShield,
-}, props.loadWidget)
+}, props.loadWidget, props.timeout)
 
-if (props.onChallengeHidden) {
-    subscribeTo('challenge-hidden', props.onChallengeHidden)
-}
+const emits = defineEmits<{
+    'challenge-hidden': [],
+    'challenge-visible': [],
+    'javascript-error': [error: JavascriptError],
+    'network-error': [],
+    'token-expired': [],
+    'success': [token: Token],
+}>()
 
-if (props.onChallengeVisible) {
-    subscribeTo('challenge-visible', props.onChallengeVisible)
-}
+subscribeTo('challenge-hidden', () => {
+    emits('challenge-hidden')
+})
 
-if (props.onJavascriptError) {
-    subscribeTo('javascript-error', props.onJavascriptError)
-}
+subscribeTo('javascript-error', (error: JavascriptError) => {
+    emits('javascript-error', error)
+})
 
-if (props.onNetworkError) {
-    subscribeTo('network-error', props.onNetworkError)
-}
+subscribeTo('challenge-visible', () => {
+    emits('challenge-visible')
+})
 
-if (props.onSuccess) {
-    subscribeTo('success', props.onSuccess)
-}
+subscribeTo('token-expired', () => {
+    emits('token-expired')
+})
 
-if (props.onTokenExpired) {
-    subscribeTo('token-expired', props.onTokenExpired)
-}
+subscribeTo('network-error', () => {
+    emits('network-error')
+})
+
+subscribeTo('success', (tkn: Token) => {
+    emits('success', tkn)
+})
 </script>

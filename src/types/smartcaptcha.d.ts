@@ -47,7 +47,8 @@ export interface SmartCaptchaRenderProps {
 
 export type BaseEventCallback = () => void
 export type SuccessEventCallback = (token: Token) => void
-export type JavascriptErrorEventCallback = (error: { filename: string, message: string, col: number, line: number }) => void
+export type JavascriptError = { filename: string, message: string, col: number, line: number }
+export type JavascriptErrorEventCallback = (error: JavascriptError) => void
 
 /**
  * @link https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#methods

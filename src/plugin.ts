@@ -13,11 +13,11 @@ const SmartCaptchaPlugin: Plugin = {
     },
 }
 
-export default SmartCaptchaPlugin
+export default SmartCaptcha
 
 export {
+    SmartCaptcha, // to keep backward compatibility
     SmartCaptchaPlugin,
-    SmartCaptcha,
     useSmartCaptcha,
     type WindowSmartCaptcha,
     type WidgetId,

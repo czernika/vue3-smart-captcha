@@ -13,7 +13,7 @@ type RenderProps = Partial<SmartCaptchaRenderProps> | string
 type CaptchaContainer = Ref | HTMLElement | 'string'
 type CaptchaSubscriptionEventCallback = BaseEventCallback | SuccessEventCallback | JavascriptErrorEventCallback
 
-export const useSmartCaptcha = (container: CaptchaContainer, renderProps?: RenderProps, load = true) => {
+export const useSmartCaptcha = (container: CaptchaContainer, renderProps?: RenderProps, load = true, timeout = 2000) => {
     const widgetId = ref<WidgetId>()
     const token = ref<Token>()
 
@@ -41,7 +41,7 @@ export const useSmartCaptcha = (container: CaptchaContainer, renderProps?: Rende
 
     const __addScript = () => {
         const scriptElement = document.createElement('script')
-        scriptElement.src = 'https://smartcaptcha.yandexcloud.net/captcha.js?render=onload&onload=__smartCaptchaLoaded'
+        scriptElement.src = 'https://smartcaptcha.yandexcloud.net/captcha.js?render=onload'
         scriptElement.defer = true
         scriptElement.type = 'text/javascript'
         scriptElement.crossOrigin = 'anonymous'
@@ -121,9 +121,26 @@ export const useSmartCaptcha = (container: CaptchaContainer, renderProps?: Rende
             __addScript()
         }
 
-        if (window.__smartCaptchaLoaded === undefined) {
-            window.__smartCaptchaLoaded = __initWidget
-        }
+        // NOTE cannot use `onrender` method as there is an issue with multiple captchas on the same page
+        const totalAttempts = 10
+        const isSmartCaptchaLoaded = setInterval(() => {
+            let attempt = 0 
+            if (++attempt === totalAttempts) {
+                /* eslint-disable no-console */
+                console.warn(
+                    `Captcha cannot be initialized for ${timeout}ms. Make sure widget script is loaded`
+                )
+                /* eslint-enable no-console */
+                
+                clearInterval(isSmartCaptchaLoaded)
+                return
+            }
+    
+            if (window.smartCaptcha !== undefined) {
+                clearInterval(isSmartCaptchaLoaded)
+                __initWidget()
+            }
+        }, timeout / totalAttempts)
     })
 
     onUnmounted(() => {
