@@ -28,9 +28,7 @@ onMounted(() => {
         loadWidgetScript()
     }
 
-    if (! appended.value) {
-        initWidget()
-    }
+    initWidget()
 })
 
 onUnmounted(() => {

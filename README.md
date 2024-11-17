@@ -196,3 +196,4 @@ We are using [Vitest](https://vitest.dev/guide/)
 ## TODO
 
 - [ ] - move to composable in v1
+- [ ] - TS types support for components and import in v1
