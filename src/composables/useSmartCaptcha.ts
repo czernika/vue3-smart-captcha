@@ -95,10 +95,9 @@ export const useSmartCaptcha = (container: CaptchaContainer, renderProps?: Rende
         // Required to set token value
         window.smartCaptcha?.subscribe(widgetId.value, 'success', __onSuccess)
 
-        __subscribeToCaptchaEvent('challenge-hidden')
-        // Array.from(Object.keys(__subscriptions) as SubscribeEvent[]).forEach(event => {
-        //     __subscribeToCaptchaEvent(event)
-        // })
+        Array.from(Object.keys(__subscriptions) as SubscribeEvent[]).forEach(event => {
+            __subscribeToCaptchaEvent(event)
+        })
     }
 
     const __initWidget = () => {
