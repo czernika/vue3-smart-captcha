@@ -1,5 +1,11 @@
 import type { Plugin } from 'vue'
 import SmartCaptcha from '@/components/SmartCaptcha.vue'
+import { 
+    execute,
+    destroy,
+    reset,
+    getResponse,
+} from '@/utils/captcha-data'
 
 const SmartCaptchaPlugin: Plugin = {
     install: (app) => {
@@ -7,4 +13,11 @@ const SmartCaptchaPlugin: Plugin = {
     },
 }
 
-export { SmartCaptchaPlugin, SmartCaptcha }
+export {
+    SmartCaptchaPlugin,
+    SmartCaptcha,
+    execute,
+    destroy,
+    reset,
+    getResponse,
+}

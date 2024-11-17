@@ -17,6 +17,10 @@ const props = withDefaults(defineProps<RenderParams & CaptchaProps & Subscriptio
     timeout: 2000,
 })
 
+const emits = defineEmits<{
+    initialized: [widgetId: WidgetId]
+}>()
+
 onMounted(() => {
     if (widgetNeedsToBeLoaded.value) {
         loadWidgetScript()
@@ -72,7 +76,9 @@ const initWidget = () => {
                 hideShield: props.hideShield,
             })
 
-            subscribe(widgetId)           
+            subscribe(widgetId)
+
+            emits('initialized', widgetId)
         }
     }, props.timeout / totalAttempts)
 }

@@ -100,11 +100,58 @@ export default defineNuxtConfig({
 
 This way you don't need to render widget script itself. Just set `:load-widget="false"` to disable script loading
 
-```html
-<SmartCaptcha sitekey="sitekey" :load-widget="false" />
+```vue
+<template>
+    <SmartCaptcha sitekey="sitekey" :load-widget="false" />
+</template>
 ```
 
 You can specify amount of time in `timeout` how much script will try to resolve `window.smartCaptcha` object before give up
+
+## Invisible captcha
+
+Pass invisible property
+
+```vue
+<template>
+    <SmartCaptcha sitekey="sitekey" invisible />
+</template>
+```
+
+Of course you need to handle validation yourself. You can use helper methods provided by this package or use global `window.smartCaptcha` object
+
+## Helper methods
+
+`window.smartCaptcha` object should be available globally. However package provides 4 helper methods with the same functionality
+
+```js
+import { 
+    execute, // execute captcha
+    destroy, // destroy it
+    reset, // reset token
+    getResponse, // receive token
+} from 'vue3-smart-captcha'
+```
+
+## Events
+
+When captcha initialized you can subscribe to `initialized` emitted event
+
+```vue
+<template>
+    <SmartCaptcha sitekey="sitekey" @initialized="setWidgetId" />
+</template>
+
+<script setup>
+const widgetID = ref()
+
+const setWidgetId = (id) => {
+    console.log(id)
+
+    widgetID.value = id
+}
+</script>
+```
 
 ## License
 

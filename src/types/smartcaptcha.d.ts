@@ -75,6 +75,6 @@ export interface SmartCaptcha {
     destroy: (widgetId?: WidgetId) => void
     
     // With 'success' subscription event token passed into callback
-    subscribe(widgetId: widgetId, event: Extract<SubscribeEvent, 'success'>, callback: (token: Token) => void): () => void
-    subscribe(widgetId: widgetId, event: Exclude<SubscribeEvent, 'success'>, callback: () => void): () => void
+    subscribe(widgetId: WidgetId, event: Extract<SubscribeEvent, 'success'>, callback: (token: Token) => void): () => void
+    subscribe(widgetId: WidgetId, event: Exclude<SubscribeEvent, 'success'>, callback: () => void): () => void
 }
