@@ -8,13 +8,10 @@ You need to [create](https://cloud.yandex.ru/docs/smartcaptcha/operations/create
 
 ## Installation
 
-Install it using npm
+Install it
 
 ```sh
-npm install vue3-smart-captcha
-
-# Or using pnpm
-pnpm add vue3-smart-captcha
+npm install vue3-smart-captcha@0.5.0
 ```
 
 ## Usage
@@ -195,7 +192,3 @@ Open-source under [MIT license](LICENSE)
 We are using [Vitest](https://vitest.dev/guide/)
 
 > Help wanted to cover properties were passed to `window.smartCaptcha` object
-
-```sh
-pnpm test
-```
