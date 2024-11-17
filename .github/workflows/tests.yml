@@ -11,6 +11,9 @@ on:
       - '**.vue'
       - '**.ts'
 
+env:
+  HUSKY: 0
+
 jobs:
   js-tests:
     name: Run JS tests

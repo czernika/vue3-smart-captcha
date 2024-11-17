@@ -135,20 +135,53 @@ import {
 
 ## Events
 
-When captcha initialized you can subscribe to `initialized` emitted event
+When captcha initialized you can subscribe to `initialized` emitted event. Can be useful with invisible or multiple captchas
+
+### Invisible captcha example using callback
 
 ```vue
 <template>
-    <SmartCaptcha sitekey="sitekey" @initialized="setWidgetId" />
+    <SmartCaptcha
+        :sitekey="siteKey"
+        invisible
+        :callback="send"
+        @initialized="setWidgetId"
+    />
+
+    <button type="button" @click="submit">
+        Submit
+    </button>
 </template>
 
 <script setup>
+import { SmartCaptcha, execute } from 'vue3-smart-captcha'
+
+const siteKey = import.meta.env.VITE_SMARTCAPTCHA_SITE_KEY
+
 const widgetID = ref()
 
 const setWidgetId = (id) => {
-    console.log(id)
-
     widgetID.value = id
+}
+
+const submit = () => {
+    execute(widgetID.value)
+}
+
+const validateCaptcha = async (tkn) => {
+    // send request to validate token
+}
+
+const send = async (tkn) => {
+    // Captcha token is available
+    console.log(tkn)
+    
+    // Handle validation response from backend
+    // Prevent further submitting if response has error or token invalid/expired
+    await validateCaptcha(token)
+
+    // Send request to backend with form data if validation passed
+    // ...
 }
 </script>
 ```
