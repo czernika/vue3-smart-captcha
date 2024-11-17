@@ -8,8 +8,9 @@ import type {
     JavascriptError,
     SmartCaptchaRenderProps,
     Token,
+    WidgetId,
 } from '@/types/smartcaptcha'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 const container = ref<HTMLDivElement>()
 
@@ -29,7 +30,7 @@ const props = withDefaults(defineProps<SmartCaptchaComponentProps>(), {
     onJavascriptError: undefined,
 })
 
-const { subscribeTo } = useSmartCaptcha(container, {
+const { subscribeTo, widgetId } = useSmartCaptcha(container, {
     sitekey: props.sitekey,
     callback: props.callback,
     hl: props.hl,
@@ -41,32 +42,39 @@ const { subscribeTo } = useSmartCaptcha(container, {
 }, props.loadWidget, props.timeout)
 
 const emits = defineEmits<{
-    'challenge-hidden': [],
-    'challenge-visible': [],
-    'javascript-error': [error: JavascriptError],
-    'network-error': [],
-    'token-expired': [],
-    'success': [token: Token],
+    challengeHidden: [],
+    challengeVisible: [],
+    javascriptError: [error: JavascriptError],
+    networkError: [],
+    tokenExpired: [],
+    success: [token: Token],
+    initialized: [id: WidgetId]
 }>()
 
-subscribeTo('challenge-hidden', () => {
-    emits('challenge-hidden')
+watch(widgetId, (newVal) => {
+    if (newVal !== undefined) {
+        emits('initialized', newVal)
+    }
 })
 
-subscribeTo('javascript-error', (error: JavascriptError) => {
-    emits('javascript-error', error)
+subscribeTo('challenge-hidden', () => {
+    emits('challengeHidden')
 })
 
 subscribeTo('challenge-visible', () => {
-    emits('challenge-visible')
+    emits('challengeVisible')
 })
 
-subscribeTo('token-expired', () => {
-    emits('token-expired')
+subscribeTo('javascript-error', (error: JavascriptError) => {
+    emits('javascriptError', error)
 })
 
 subscribeTo('network-error', () => {
-    emits('network-error')
+    emits('networkError')
+})
+
+subscribeTo('token-expired', () => {
+    emits('tokenExpired')
 })
 
 subscribeTo('success', (tkn: Token) => {
