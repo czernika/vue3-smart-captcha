@@ -30,6 +30,6 @@ jobs:
 
       # TODO run tests on release as well
 
-      - run: npm publish --tag ${{ env.TAG_NAME }}
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
