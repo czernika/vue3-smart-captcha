@@ -1,183 +1,408 @@
 # Yandex SmartCaptcha for Vue3 projects
 
-Adds [Yandex SmartCaptcha](https://cloud.yandex.ru/docs/smartcaptcha/) component into your Vue3 application
+Adds [Yandex SmartCaptcha](https://cloud.yandex.ru/docs/smartcaptcha/) into your Vue3 application
 
-You need to [create](https://cloud.yandex.ru/docs/smartcaptcha/operations/create-captcha) Captcha and [get](https://cloud.yandex.ru/docs/smartcaptcha/operations/get-keys) keys. You need client site key in order to activate captcha component and it is the only required property 
+> You need to [create](https://cloud.yandex.ru/docs/smartcaptcha/operations/create-captcha) captcha first and [get](https://cloud.yandex.ru/docs/smartcaptcha/operations/get-keys) both client and server keys. This package requires only client site key
 
-> NOTE: this package does NOT provides verification of response - you still need to [implement](https://cloud.yandex.ru/docs/smartcaptcha/concepts/validation) it 
+> NOTE: this package does **NOT** provides verification of response - you still need to [implement](https://cloud.yandex.ru/docs/smartcaptcha/concepts/validation) it on server side
+
+## Migration to v1
+
+If you have vue3-smart-captcha package already installed there are few changes - all of them related to subscriptions as every subscription property was "relocated" to emitted events, e.g.
+
+```vue
+<template>
+    <!-- Before -->
+    <SmartCaptcha
+        ...
+        :on-success="onSuccess"
+        :on-network-error="onNetworkError"
+        :on-challenge-visible="onChallengeVisible"
+        :on-challenge-hidden="onChallengeHidden"
+        :on-token-expired="onTokenExpired"
+    />
+
+    <!-- After -->
+    <SmartCaptcha
+        ...
+        @success="onSuccess"
+        @network-error="onNetworkError"
+        @challenge-visible="onChallengeVisible"
+        @challenge-hidden="onChallengeHidden"
+        @token-expired="onTokenExpired"
+
+        @javascript-error="onJavascriptError" // new event
+    />
+</template>
+```
+
+Everything else you can keep as it is or migrate to a new API
 
 ## Installation
 
-Install it
+Run installation command using your preferred package manager, e.g
 
 ```sh
-npm install vue3-smart-captcha@0.5.0
+npm install vue3-smart-captcha
 ```
+
+Script registers `window.smartCaptcha` global object you can access. This come from Yandex SmartCaptcha script itself
 
 ## Usage
 
-No need to add widget script in the head section of your site
+Since version 1.0.0 this package provides two ways to use it - as component or composable
 
-### As plugin
+## Component
+
+Register component globally as plugin or import it per component base
 
 ```js
-// main.js
-import { createApp } from 'vue'
 import { SmartCaptchaPlugin } from 'vue3-smart-captcha'
 
-const app = createApp({})
+const app = createApp()
 
 app.use(SmartCaptchaPlugin)
 ```
 
-### As component
+**OR**
 
 ```vue
 <template>
-    <SmartCaptcha :sitekey="sitekey" />
+    <SmartCaptcha />
 </template>
 
 <script setup>
-import { SmartCaptcha } from 'vue3-smart-captcha'
+import SmartCaptcha from 'vue3-smart-captcha'
 
-const sitekey = 'client_site_key' // import.meta.env.VITE_YANDEX_SMART_CAPTCHA_KEY
+// In order to keep backward compatibility plugin can be imported this way
+// import { SmartCaptcha } from 'vue3-smart-captcha'
 </script>
 ```
 
-You may add `style="height: 100px"` in order to [prevent](https://cloud.yandex.ru/docs/smartcaptcha/operations/advanced-method) layout jump
+You need to pass client key in order to activate captcha. You can either pass `:sitekey` component property
 
 ```vue
 <template>
-    <SmartCaptcha style="height: 100px" :sitekey="sitekey" />
+    <SmartCaptcha :sitekey="key" />
 </template>
+
+<script setup>
+import SmartCaptcha from 'vue3-smart-captcha'
+
+const key = '__client_key'
+</script>
 ```
 
-## Options
+**OR** register environment variable called `VITE_SMARTCAPTCHA_KEY`
 
-Only `sitekey` is required
-
-| Property             | Default                     | Description                                                                | Type                                                                                         |
-|----------------------|-----------------------------|----------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
-| **sitekey**          |  -                          | Public site key (find it at Yandex console panel)                          | `string`                                                                                     |
-| loadWidget           | `true`                      | Load widget script or not (if not you should provide source script itself) | `boolean`                                                                                    |
-| timeout              | `2000`                      | How much time will component looking for smartCaptcha object to initialize | `number`                                                                                     |
-| callback             | `undefined`                 | [Render property (1)](https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#render)                                                                          | `(token: string) => void`                                                                    |
-| hl                   | `window.navigator.language` | See [1]                                                                          | `'ru', 'en', 'be', 'kk', 'tt', 'uk', 'uz', 'tr'`                                             |
-| test                 | `false`                     | See [1]                                                                           | `boolean`                                                                                    |
-| webview              | `false`                     | See [1]                                                                           | `boolean`                                                                                    |
-| invisible            | `false`                     | See [1]                                                                           | `boolean`                                                                                    |
-| shieldPosition       | `center-right`              | See [1]                                                                           | `'top-left', 'center-left', 'bottom-left', 'top-right', 'center-right', 'bottom-right'`      | 
-| hideShield           | `false`                     | See [1]                                                                           | `boolean`                                                                                    |
-| on-success           | `undefined`                 | [Subscription event (2)](https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#subscribe)                                                         | `(token: string) => void`                                                                    |
-| on-network-error     | `undefined`                 | See [2]                                                          | `() => void`                                                                                 |
-| on-challenge-visible | `undefined`                 | See [2]                                                          | `() => void`                                                                                 |
-| on-challenge-hidden  | `undefined`                 | See [2]                                                          | `() => void`                                                                                 |
-| on-token-expired     | `undefined`                 | See [2]                                                          | `() => void`                                                                                 |
-
-Basically it gets every parameter of `window.smartCaptcha` [object](https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#methods) plus 5 callbacks for every [subscription](https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#subscribe) events named as `on` + event name in camelCase ('success' => 'onSuccess', 'network-error' => 'onNetworkError', etc)
-
-### Do not load widget
-
-You may add script tag `<script src="https://smartcaptcha.yandexcloud.net/captcha.js?render=onload" defer></script>` yourself or using Nuxt config like
-
-```js
-export default defineNuxtConfig({
-  app: {
-    head: {
-      script: [
-        {
-          src: 'https://smartcaptcha.yandexcloud.net/captcha.js?render=onload',
-          defer: true,
-        }
-      ]
-    }
-  }
-})
+```
+// .env
+VITE_SMARTCAPTCHA_KEY="__client_key"
 ```
 
-This way you don't need to render widget script itself. Just set `:load-widget="false"` to disable script loading
+Now you can see captcha being rendered
+
+### Do not initialize widget script
+
+Component appends captcha script into head section of application. If you already load smartcaptcha script via direct link you can disable this behavior by passing `:load-widget="false"`
 
 ```vue
 <template>
-    <SmartCaptcha sitekey="sitekey" :load-widget="false" />
+    <SmartCaptcha :load-widget="false" />
 </template>
 ```
 
-You can specify amount of time in `timeout` how much script will try to resolve `window.smartCaptcha` object before give up
+### Rendering timeout
 
-## Invisible captcha
-
-Pass invisible property
+On a mount component will try to resolve global `window.smartCaptcha` object. If it was not defined component will "die". You may set `timeout` property in milliseconds to specify amount of time package will try to resolve this object
 
 ```vue
 <template>
-    <SmartCaptcha sitekey="sitekey" invisible />
+    <SmartCaptcha :timeout="5000" />
 </template>
 ```
 
-Of course you need to handle validation yourself. You can use helper methods provided by this package or use global `window.smartCaptcha` object
+Default value is `2000` (2 seconds)
 
-## Helper methods
+### SmartCaptcha render properties
 
-`window.smartCaptcha` object should be available globally. However package provides 4 helper methods with the same functionality
+Component accepts every property from YandexSmartCaptcha widget as is. Basically it gets every parameter of `window.smartCaptcha` [object](https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#render)
 
-```js
-import { 
-    execute, // execute captcha
-    destroy, // destroy it
-    reset, // reset token
-    getResponse, // receive token
-} from 'vue3-smart-captcha'
+Every property is optional (Well, technically *sitekey* is not)
+
+| Property       | Type                                                                                    | Default                                 |
+|----------------|-----------------------------------------------------------------------------------------|-----------------------------------------|
+| sitekey        | string                                                                                  | `import.meta.env.VITE_SMARTCAPTCHA_KEY` |
+| callback       | (token: Token) => void                                                                  | `undefined`                             |
+| hl             | `'ru', 'en', 'be', 'kk', 'tt', 'uk', 'uz', 'tr'`                                        | `window.navigator.language`             |
+| test           | boolean                                                                                 | `false`                                 |
+| webview        | boolean                                                                                 | `false`                                 |
+| invisible      | boolean                                                                                 | `false`                                 |
+| shieldPosition | `'top-left', 'center-left', 'bottom-left', 'top-right', 'center-right', 'bottom-right'` | `center-right`                          |
+| hideShield     | boolean                                                                                 | `false`                                 |
+
+### Events
+
+Let start with special `initialized` event - it fires when widget ID was resolved
+
+```vue
+<template>
+    <SmartCaptcha @initialized="onInit" />
+</template>
+
+<script setup>
+const onInit = (widgetId) => {
+    console.log(widgetId)
+}
+</script>
 ```
 
-## Events
+#### SmartCaptcha subscription events
 
-When captcha initialized you can subscribe to `initialized` emitted event. Can be useful with invisible or multiple captchas
-
-### Invisible captcha example using callback
+Every [subscription](https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#subscribe) represented as emit. Only `success` and `javascript-error` accepts arguments
 
 ```vue
 <template>
     <SmartCaptcha
-        :sitekey="siteKey"
-        invisible
-        :callback="send"
-        @initialized="setWidgetId"
+        ...
+        @success="onSuccess"
+        @network-error="onNetworkError"
+        @challenge-visible="onChallengeVisible"
+        @challenge-hidden="onChallengeHidden"
+        @token-expired="onTokenExpired"
+        @javascript-error="onJavascriptError"
     />
-
-    <button type="button" @click="submit">
-        Submit
-    </button>
 </template>
 
 <script setup>
-import { SmartCaptcha, execute } from 'vue3-smart-captcha'
-
-const siteKey = import.meta.env.VITE_SMARTCAPTCHA_SITE_KEY
-
-const widgetID = ref()
-
-const setWidgetId = (id) => {
-    widgetID.value = id
+const onSuccess = (token) => {
+    console.log(token)
 }
+
+const onJavascriptError = (error) => {
+    console.log(error)
+}
+
+// ...
+</script>
+```
+
+## Composable
+
+If you need you may create your own Captcha component using composable methods. This is more flexible and recommended way
+
+```vue
+<template>
+    <div ref="container" />
+</template>
+
+<script setup>
+import { useSmartCaptcha } from 'vue3-smart-captcha'
+
+const container = ref()
+
+// Need to pass valid CSS selector, HTMLElement or Ref to it's element as first and only required argument
+const captcha = useSmartCaptcha(container)
+</script>
+```
+
+> **NOTE:** `useSmartCaptcha('#captcha')` or `useSmartCaptcha(document.querySelector('#captcha'))` are both valid options but with some restrictions - Ref type `container` is undefined on initial load (it will be resolved lately, on mounted hook). Therefore do not pass `container.value` into composable. Same valid for other selectors as they are undefined on initial load so use it within `onMounted` hook
+
+### Specifying site key
+
+When using composable there are some ways to pass sitekey into captcha
+
+Default one is to look into `.env` file for a key named `VITE_SMARTCAPTCHA_KEY`
+
+Second - passing it as a string in second argument
+
+```js
+const captcha = useSmartCaptcha(container, '__sitekey')
+```
+
+or pass it with other render props
+
+```js
+const captcha = useSmartCaptcha(container, {
+    sitekey: '__sitekey',
+})
+```
+
+### Resolve properties
+
+To access token or widget id use related ref values
+
+```js
+const { token, widgetId } = useSmartCaptcha(container)
+
+console.log(token.value, widgetId.value)
+```
+
+> Remember that `token.value` is undefined on initial load. It will be resolved only on successful captcha response after executing captcha component
+
+### Do not initialize widget script
+
+Composable appends captcha script into head section of application when being called. If you already load smartcaptcha script via direct link you can disable this behavior by setting third argument as `false`
+
+```js
+const captcha = useSmartCaptcha(container, {
+    // render props
+}, false)
+```
+
+### Rendering timeout
+
+When being called composable will try to resolve global `window.smartCaptcha` object. If it was not defined component will "die". You may set `timeout` as fourth argument in milliseconds to specify amount of time package will try to resolve this object
+
+```js
+const captcha = useSmartCaptcha(container, {
+    // render props
+}, true, 5000)
+```
+
+Default value is `2000` (2 seconds)
+
+### SmartCaptcha render properties
+
+Same as for component properties (or `window.smartCaptcha` [object](https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#render))
+
+```js
+const captcha = useSmartCaptcha(container, {
+    sitekey: '__sitekey',
+    callback: callback,
+    hl: 'ru',
+    test: false,
+    invisible: false,
+    webview: false,
+    hideShield: false,
+    shieldPosition: 'top-center',
+})
+```
+
+### Subscriptions
+
+In order to subscribe on captcha events use `subscribeTo` method passing event name and callback function to handle it
+
+```js
+const { subscribeTo } = useSmartCaptcha(container)
+
+const onSuccess = (token) => {
+    console.log(token)
+}
+
+const onNetworkError = () => {
+    console.log('Good bye World!')
+}
+
+subscribeTo('success', onSuccess)
+subscribeTo('network-error', onNetworkError)
+```
+
+### SmartCaptcha utility methods
+
+Composable provides methods to deal with captcha [object](https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#render) methods such as `execute`, `reset`, `destroy` and `getResponse`
+
+```js
+const {
+    execute,
+    destroy,
+    reset,
+    getResponse,
+} = useSmartCaptcha(container)
+```
+
+## Examples
+
+### Get token with invisible captcha into form data
+
+```vue
+<template>
+    <div ref="container" />
+
+    <button type="button" @click="getToken">
+        Get token
+    </button>
+</template>
+
+<script lang="ts" setup>
+import { useSmartCaptcha, type Token } from 'vue3-smart-captcha'
+
+const sitekey = import.meta.env.VITE_CUSTOM_CLIENT_KEY
+const container = ref()
+
+// Dummy form code
+const form = useForm({
+    name: '',
+    token: undefined,
+})
+
+const { token, execute } = useSmartCaptcha(container, {
+    sitekey,
+    invisible: true,
+})
+
+const getToken = () => {
+    execute()
+
+    console.log(token.value) // `undefined` see bellow
+}
+
+// Token will not be resolved instantly. Therefore you need to watch its value being changed
+watch(token, (newVal) => {
+    if (newVal !== undefined) {
+        form.token = newVal
+    }
+})
+</script>
+```
+
+### Send request to backend using invisible captcha
+
+```vue
+<template>
+    <form @submit.prevent="submit">
+        <!-- Fields -->
+
+        <div ref="container" />
+
+        <button type="submit">
+            Submit
+        </button>
+    </form>
+</template>
+
+<script lang="ts" setup>
+import { useSmartCaptcha, type Token } from 'vue3-smart-captcha'
+
+const sitekey = import.meta.env.VITE_CUSTOM_CLIENT_KEY
+const container = ref()
+
+const { execute } = useSmartCaptcha(container, {
+    sitekey,
+    invisible: true,
+    callback: onCaptchaFired,
+})
 
 const submit = () => {
-    execute(widgetID.value)
+    execute() // this will trigger onCaptchaFired function when token being received
 }
 
-const validateCaptcha = async (tkn) => {
-    // send request to validate token
-}
+const onCaptchaFired = async (tkn: Token) => {
+    // Dummy code
+    // Send request to backend to validate token
+    try {
+        const response = await validateToken(tkn)
+    } catch (error) {
 
-const send = async (tkn) => {
-    // Captcha token is available
-    console.log(tkn)
-    
-    // Handle validation response from backend
-    // Prevent further submitting if response has error or token invalid/expired
-    await validateCaptcha(token)
+    }
 
-    // Send request to backend with form data if validation passed
+    if (! isSuccessful(response)) {
+        // Handle validation error
+        // ...
+        return
+    }
+
+    // Send form data to backend
     // ...
 }
 </script>
@@ -190,10 +415,3 @@ Open-source under [MIT license](LICENSE)
 ## Testing
 
 We are using [Vitest](https://vitest.dev/guide/)
-
-> Help wanted to cover properties were passed to `window.smartCaptcha` object
-
-## TODO
-
-- [ ] - move to composable in v1
-- [ ] - TS types support for components and import in v1
