@@ -21,13 +21,6 @@ type SmartCaptchaComponentProps = SmartCaptchaRenderProps & {
 const props = withDefaults(defineProps<SmartCaptchaComponentProps>(), {
     loadWidget: true,
     timeout: 2000,
-
-    onChallengeVisible: undefined,
-    onChallengeHidden: undefined,
-    onNetworkError: undefined,
-    onTokenExpired: undefined,
-    onSuccess: undefined,
-    onJavascriptError: undefined,
 })
 
 const { subscribeTo, widgetId } = useSmartCaptcha(container, {
