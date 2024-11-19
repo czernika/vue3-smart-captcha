@@ -1,5 +1,11 @@
 # Releases
 
+## 1.1.0 - 2024-11-19
+
+- feat: added utility class to work with "custom" widget id outside of current captcha component
+- refactor: prevent script injection if `window.smartCaptcha` object already defained
+- docs: improved docs related to widget initialization
+
 ## 1.0.0 - 2024-11-18
 
 - **BREAKING**: every subscription property redefined as emiited events
