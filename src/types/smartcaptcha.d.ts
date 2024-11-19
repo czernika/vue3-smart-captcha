@@ -49,6 +49,7 @@ export type BaseEventCallback = () => void
 export type SuccessEventCallback = (token: Token) => void
 export type JavascriptError = { filename: string, message: string, col: number, line: number }
 export type JavascriptErrorEventCallback = (error: JavascriptError) => void
+export type CaptchaSubscriptionEventCallback = BaseEventCallback | SuccessEventCallback | JavascriptErrorEventCallback
 
 /**
  * @link https://cloud.yandex.ru/docs/smartcaptcha/concepts/widget-methods#methods

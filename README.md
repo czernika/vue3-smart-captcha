@@ -112,6 +112,15 @@ Component appends captcha script into head section of application. If you alread
 </template>
 ```
 
+> Package checks if `window.smartCaptcha` object was defined. However when using multiple captcha instances at once all of them will have `window.smartCaptcha === undefined` on initial load. Therefore it is better either load script on your own and disable widget loading for every captcha or disable it for every captcha but first, e.g.
+
+```vue
+<template>
+    <SmartCaptcha />
+    <SmartCaptcha :load-widget="false" />
+</template>
+```
+
 ### Rendering timeout
 
 On a mount component will try to resolve global `window.smartCaptcha` object. If it was not defined component will "die". You may set `timeout` property in milliseconds to specify amount of time package will try to resolve this object
@@ -248,6 +257,18 @@ Composable appends captcha script into head section of application when being ca
 const captcha = useSmartCaptcha(container, {
     // render props
 }, false)
+```
+
+> Package checks if `window.smartCaptcha` object was defined. However when using multiple captcha instances at once all of them will have `window.smartCaptcha === undefined` on initial load.. Therefore it is better either load script on your own and disable widget loading for every captcha or disable it for every captcha but first, e.g.
+
+```js
+const firstCaptcha = useSmartCaptcha(container, {
+    // render props
+})
+
+const secondCaptcha = useSmartCaptcha(container, {
+    // render props
+}, false) // disable script appending as it will be appended by first captcha
 ```
 
 ### Rendering timeout
@@ -406,6 +427,19 @@ const onCaptchaFired = async (tkn: Token) => {
     // ...
 }
 </script>
+```
+
+## Utilities
+
+Package provides utility class with every method but `render` in order if you need call captcha methods "manually" outside of current captcha (since both composable and captcha do not allows you to specify "custom" widget id)
+
+```js
+import { SmartCaptchaUtils } from 'vue3-smart-captcha'
+
+const widgetId = 0 // example
+const utils = new SmartCaptchaUtils()
+
+utils.execute(widgetId)
 ```
 
 ## License

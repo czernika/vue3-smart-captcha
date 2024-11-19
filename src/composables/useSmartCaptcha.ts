@@ -1,32 +1,31 @@
 import { onMounted, onUnmounted, ref, type Ref } from 'vue'
 import type {
-    BaseEventCallback,
-    JavascriptErrorEventCallback,
+    CaptchaSubscriptionEventCallback,
     SmartCaptchaRenderProps,
     SubscribeEvent,
-    SuccessEventCallback,
     Token,
     WidgetId,
 } from '@/types/smartcaptcha'
+import SmartCaptchaUtils from '@/utils/smartcaptcha'
 
 type RenderProps = Partial<SmartCaptchaRenderProps> | string
 type CaptchaContainer = Ref | HTMLElement | string
-type CaptchaSubscriptionEventCallback = BaseEventCallback | SuccessEventCallback | JavascriptErrorEventCallback
 
 export const useSmartCaptcha = (container: CaptchaContainer, renderProps?: RenderProps, load = true, timeout = 2000) => {
+    const utils = new SmartCaptchaUtils()
+
     const widgetId = ref<WidgetId>()
     const token = ref<Token>()
 
     const __container = ref()
-    const __scriptWasAppended = ref(false)
 
     const __subscriptions: Record<SubscribeEvent, CaptchaSubscriptionEventCallback[]> = {
-        success: [] as SuccessEventCallback[],
-        'javascript-error': [] as JavascriptErrorEventCallback[],
-        'network-error': [] as BaseEventCallback[],
-        'token-expired': [] as BaseEventCallback[],
-        'challenge-hidden': [] as BaseEventCallback[],
-        'challenge-visible': [] as BaseEventCallback[],
+        success: [],
+        'javascript-error': [],
+        'network-error': [],
+        'token-expired': [],
+        'challenge-hidden': [],
+        'challenge-visible': [],
     }
 
     const __setContainer = () => {
@@ -41,14 +40,12 @@ export const useSmartCaptcha = (container: CaptchaContainer, renderProps?: Rende
 
     const __addScript = () => {
         const scriptElement = document.createElement('script')
-        scriptElement.src = 'https://smartcaptcha.yandexcloud.net/captcha.js?render=onload'
+        scriptElement.src = utils.SCRIPT_RENDER_ONLOAD_SRC
         scriptElement.defer = true
         scriptElement.type = 'text/javascript'
         scriptElement.crossOrigin = 'anonymous'
         scriptElement.dataset.captcha = 'true'
         document.head.appendChild(scriptElement)
-
-        __scriptWasAppended.value = true
     }
 
     const __renderProps = (): SmartCaptchaRenderProps => {
@@ -64,7 +61,7 @@ export const useSmartCaptcha = (container: CaptchaContainer, renderProps?: Rende
 
         return {
             ...renderProps,
-            sitekey, // the only required parameter
+            sitekey,
         }
     }
 
@@ -75,9 +72,7 @@ export const useSmartCaptcha = (container: CaptchaContainer, renderProps?: Rende
     const __subscribeToCaptchaEvent = (event: SubscribeEvent) => {
         if (__subscriptions[event].length > 0) {
             __subscriptions[event].forEach(cb => {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore Yelling because of callback type
-                window.smartCaptcha?.subscribe(widgetId.value as WidgetId, event, cb)
+                utils.subscribe(widgetId.value as WidgetId, event, cb)
             })
         }
     }
@@ -88,7 +83,7 @@ export const useSmartCaptcha = (container: CaptchaContainer, renderProps?: Rende
         }
         
         // Required to set token value
-        window.smartCaptcha?.subscribe(widgetId.value, 'success', __onSuccess)
+        utils.subscribe(widgetId.value, 'success', __onSuccess)
 
         Array.from(Object.keys(__subscriptions) as SubscribeEvent[]).forEach(event => {
             __subscribeToCaptchaEvent(event)
@@ -112,7 +107,8 @@ export const useSmartCaptcha = (container: CaptchaContainer, renderProps?: Rende
     onMounted(() => {
         __setContainer()
 
-        if (! __scriptWasAppended.value && load) {
+        // Try not to load multiple instances per time
+        if (window.smartCaptcha === undefined && load) {
             __addScript()
         }
 
@@ -145,24 +141,27 @@ export const useSmartCaptcha = (container: CaptchaContainer, renderProps?: Rende
     })
 
     const execute = () => {
-        window.smartCaptcha?.execute(widgetId.value)
+        utils.execute(widgetId.value)
+    }
+
+    const __reset = () => {
+        widgetId.value = undefined
+        token.value = undefined
     }
 
     const reset = () => {
-        window.smartCaptcha?.reset(widgetId.value)
+        utils.reset(widgetId.value)
 
-        widgetId.value = undefined
-        token.value = undefined
+        __reset()
     }
 
     const destroy = () => {
-        window.smartCaptcha?.destroy(widgetId.value)
+        utils.destroy(widgetId.value)
         
-        widgetId.value = undefined
-        token.value = undefined
+        __reset()
     }
 
-    const getResponse = (): Token | undefined => window.smartCaptcha?.getResponse(widgetId.value)
+    const getResponse = (): Token | undefined => utils.getResponse(widgetId.value)
 
     const subscribeTo = <T extends CaptchaSubscriptionEventCallback>(event: SubscribeEvent, cb: T) => {
         __subscriptions[event].push(cb)
