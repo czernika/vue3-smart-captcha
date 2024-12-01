@@ -117,11 +117,9 @@ export const useSmartCaptcha = (container: CaptchaContainer, renderProps?: Rende
         const isSmartCaptchaLoaded = setInterval(() => {
             let attempt = 0 
             if (++attempt === totalAttempts) {
-                /* eslint-disable no-console */
                 console.warn(
-                    `Captcha cannot be initialized for ${timeout}ms. Make sure widget script is loaded`
+                    `The captcha could not be initialized in ${timeout}ms. Make sure the widget script has been loaded`,
                 )
-                /* eslint-enable no-console */
                 
                 clearInterval(isSmartCaptchaLoaded)
                 return

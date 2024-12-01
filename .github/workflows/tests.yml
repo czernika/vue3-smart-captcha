@@ -6,28 +6,35 @@ on:
       - opened
   push:
     branches:
-      - 'master'
+      - master
     paths:
-      - '**.vue'
+      - '.github/workflows/tests.yml'
+      - 'bun.lockb'
       - '**.ts'
+      - '**.vue'
 
 env:
   HUSKY: 0
 
 jobs:
-  js-tests:
-    name: Run JS tests
+  unit-tests:
     runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: true
+      matrix:
+        node-version: [18, 20, 22, 23]
+
+    name: NodeJS ${{ matrix.node-version }}
 
     steps:
       - uses: actions/checkout@v4
   
       - name: Install Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: ${{ matrix.node-version }}
 
-      - uses: oven-sh/setup-bun@v1
+      - uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
         run: bun install
