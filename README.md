@@ -1,5 +1,7 @@
 # Yandex SmartCaptcha for Vue3 projects
 
+[![Run tests](https://github.com/czernika/vue3-smart-captcha/actions/workflows/tests.yml/badge.svg)](https://github.com/czernika/vue3-smart-captcha/actions/workflows/tests.yml)
+
 Adds [Yandex SmartCaptcha](https://cloud.yandex.ru/docs/smartcaptcha/) into your Vue3 application
 
 > You need to [create](https://cloud.yandex.ru/docs/smartcaptcha/operations/create-captcha) captcha first and [get](https://cloud.yandex.ru/docs/smartcaptcha/operations/get-keys) both client and server keys. This package requires only client site key
