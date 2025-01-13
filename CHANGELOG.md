@@ -1,5 +1,17 @@
 # Releases
 
+## v1.1.1 - 2025-01-13
+
+### What's Changed
+
+* fix: incorrect build output filename by @czernika in https://github.com/czernika/vue3-smart-captcha/pull/100
+
+### New Contributors
+
+* @czernika made their first contribution in https://github.com/czernika/vue3-smart-captcha/pull/100
+
+**Full Changelog**: https://github.com/czernika/vue3-smart-captcha/compare/1.1.0...v1.1.1
+
 ## 1.1.0 - 2024-11-19
 
 - feat: added utility class to work with "custom" widget id outside of current captcha component
