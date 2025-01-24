@@ -7,7 +7,7 @@ on:
       - published
 
 env:
-  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
   HUSKY: 0
 
 jobs:
@@ -28,8 +28,11 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org/'
 
-      # TODO run tests on release as well
+      - uses: oven-sh/setup-bun@v2
 
-      - run: npm publish
+      - name: Running tests
+        run: bun run test
+
+      - run: bun publish
         env:
           NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
