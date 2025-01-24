@@ -67,8 +67,17 @@ export interface SmartCaptcha {
     reset: (widgetId?: WidgetId) => void
 
     destroy: (widgetId?: WidgetId) => void
-    
-    subscribe(widgetId: WidgetId, event: 'success', callback: SuccessEventCallback): () => void
-    subscribe(widgetId: WidgetId, event: 'javascript-error', callback: JavascriptErrorEventCallback): () => void
-    subscribe(widgetId: WidgetId, event: Exclude<SubscribeEvent, 'success', 'javascript-error'>, callback: BaseEventCallback): () => void
+
+    /**
+     * TODO types
+     * 
+     * if event === 'success', cb will be SuccessEventCallback
+     * if event === 'javascript-error', cb will be JavascriptErrorEventCallback
+     * otherwise BaseEventCallback
+     */
+    subscribe: (
+        widgetId: WidgetId,
+        event: SubscribeEvent,
+        callback: (...args: unknown) => void
+    ) => void
 }
