@@ -1,5 +1,9 @@
 # Releases
 
+## 1.1.2 - 2025-06-17
+
+**Full Changelog**: https://github.com/czernika/vue3-smart-captcha/compare/v1.1.1...1.1.2
+
 ## v1.1.1 - 2025-01-13
 
 ### What's Changed
