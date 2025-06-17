@@ -69,15 +69,16 @@ export interface SmartCaptcha {
     destroy: (widgetId?: WidgetId) => void
 
     /**
-     * TODO types
-     * 
      * if event === 'success', cb will be SuccessEventCallback
      * if event === 'javascript-error', cb will be JavascriptErrorEventCallback
      * otherwise BaseEventCallback
      */
-    subscribe: (
+    subscribe: <T extends SubscribeEvent = SubscribeEvent>(
         widgetId: WidgetId,
-        event: SubscribeEvent,
-        callback: (...args: unknown) => void
+        event: T,
+        callback: 
+            T extends 'success' ? SuccessEventCallback :
+            T extends 'javascript-error' ? JavascriptErrorEventCallback :
+            BaseEventCallback
     ) => void
 }

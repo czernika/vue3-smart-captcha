@@ -6,8 +6,11 @@
         "composite": true,
         "baseUrl": ".",
         "noEmit": true,
+        "strict": true,
         "paths": {
-            "@/*": ["src/*"]
+            "@/*": [
+                "src/*"
+            ]
         }
     }
 }

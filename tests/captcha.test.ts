@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import DummyCaptchaWithNoProps from './components/DummyCaptchaWithNoProps.vue'
-import type { Token } from '@/types/smartcaptcha'
 import { nextTick } from 'vue'
 
 const sleep = async (time = 200) => await new Promise(resolve => setTimeout(resolve, time)) // Wait longer than the component timeout
@@ -10,7 +9,7 @@ beforeEach(() => {
     window.smartCaptcha = {
         render: vi.fn(() => 1234),
         getResponse: vi.fn(() => '__token'),
-        subscribe: vi.fn((_widgetId, event, cb) => {
+        subscribe: vi.fn((_widgetId, event, cb: any) => {
             if (event === 'success') {
                 cb('__token')
             }

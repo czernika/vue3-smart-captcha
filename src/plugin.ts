@@ -6,6 +6,9 @@ import type {
     SmartCaptcha as WindowSmartCaptcha,
     WidgetId,
     Token,
+    SubscribeEvent,
+    SupportedLang,
+    ShieldPosition,
 } from '@/types/smartcaptcha'
 
 const SmartCaptchaPlugin: Plugin = {
@@ -24,4 +27,7 @@ export {
     type WindowSmartCaptcha,
     type WidgetId,
     type Token,
+    type SubscribeEvent,
+    type SupportedLang,
+    type ShieldPosition,
 }

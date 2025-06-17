@@ -72,7 +72,7 @@ export const useSmartCaptcha = (container: CaptchaContainer, renderProps?: Rende
     const __subscribeToCaptchaEvent = (event: SubscribeEvent) => {
         if (__subscriptions[event].length > 0) {
             __subscriptions[event].forEach(cb => {
-                utils.subscribe(widgetId.value as WidgetId, event, cb)
+                utils.subscribe(widgetId.value!, event, cb)
             })
         }
     }
