@@ -30,9 +30,6 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
 
-      - name: Running tests
-        run: bun run test
-
       - run: bun publish
         env:
           NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}

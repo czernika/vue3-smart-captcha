@@ -136,6 +136,8 @@ export const useSmartCaptcha = (container: CaptchaContainer, renderProps?: Rende
         if (load) {
             document.querySelector('script[data-captcha]')?.remove()
         }
+
+        destroy()
     })
 
     const execute = () => {

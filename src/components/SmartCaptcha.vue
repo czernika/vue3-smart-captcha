@@ -1,6 +1,6 @@
 <template>
     <div ref="container" />
-</template>
+</template> 
 
 <script lang="ts" setup>
 import { useSmartCaptcha } from '@/composables/useSmartCaptcha'
@@ -10,7 +10,7 @@ import type {
     Token,
     WidgetId,
 } from '@/types/smartcaptcha'
-import { ref, watch } from 'vue'
+import { onUnmounted, ref, watch } from 'vue'
 
 const container = ref<HTMLDivElement>()
 
@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<SmartCaptchaComponentProps>(), {
     timeout: 2000,
 })
 
-const { subscribeTo, widgetId } = useSmartCaptcha(container, {
+const { subscribeTo, widgetId, destroy } = useSmartCaptcha(container, {
     sitekey: props.sitekey,
     callback: props.callback,
     hl: props.hl,
@@ -72,5 +72,9 @@ subscribeTo('token-expired', () => {
 
 subscribeTo('success', (tkn: Token) => {
     emits('success', tkn)
+})
+
+onUnmounted(() => {
+    destroy()
 })
 </script>
