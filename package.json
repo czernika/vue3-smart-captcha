@@ -9,7 +9,7 @@
         "vue3"
     ],
     "license": "MIT",
-    "version": "1.1.4",
+    "version": "1.2.1",
     "type": "module",
     "main": "./dist/index.cjs",
     "module": "./dist/index.js",
@@ -29,25 +29,25 @@
         "*.{ts,vue}": "eslint ./src --fix"
     },
     "dependencies": {
-        "vue": "^3.5.13"
+        "vue": "^3.5.25"
     },
     "devDependencies": {
-        "@stylistic/eslint-plugin-ts": "^2.11.0",
-        "@types/node": "^20.17.9",
-        "@typescript-eslint/eslint-plugin": "^8.16.0",
-        "@typescript-eslint/parser": "^8.16.0",
-        "@vitejs/plugin-vue": "^5.2.1",
+        "@stylistic/eslint-plugin-ts": "^2.13.0",
+        "@types/node": "^20.19.26",
+        "@typescript-eslint/eslint-plugin": "^8.49.0",
+        "@typescript-eslint/parser": "^8.49.0",
+        "@vitejs/plugin-vue": "^5.2.4",
         "@vue/test-utils": "^2.4.6",
         "@vue/tsconfig": "^0.5.1",
         "eslint": "^8.57.1",
-        "eslint-plugin-vue": "^9.32.0",
+        "eslint-plugin-vue": "^9.33.0",
         "husky": "^9.1.7",
         "jsdom": "^25.0.1",
-        "lint-staged": "^15.2.10",
+        "lint-staged": "^15.5.2",
         "typescript": "5.6.2",
-        "vite": "^5.4.11",
+        "vite": "^5.4.21",
         "vite-plugin-dts": "^3.9.1",
-        "vitest": "^1.6.0",
+        "vitest": "^1.6.1",
         "vue-eslint-parser": "^9.4.3",
         "vue-tsc": "2.0.29"
     }
