@@ -2,7 +2,7 @@ import type { SubscribeEvent, Token, WidgetId, CaptchaSubscriptionEventCallback 
 
 class SmartCaptchaUtils
 {
-    readonly SCRIPT_RENDER_ONLOAD_SRC = 'https://smartcaptcha.yandexcloud.net/captcha.js?render=onload'
+    readonly SCRIPT_RENDER_ONLOAD_SRC = 'https://smartcaptcha.cloud.yandex.ru/captcha.js?render=onload'
 
     execute (widgetID?: WidgetId) {
         window.smartCaptcha?.execute(widgetID)
