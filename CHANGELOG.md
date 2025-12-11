@@ -1,5 +1,17 @@
 # Releases
 
+## 1.2.0 - 2025-12-11
+
+### What's Changed
+
+* Update smartcaptcha.ts by @poloskin in https://github.com/czernika/vue3-smart-captcha/pull/103
+
+### New Contributors
+
+* @poloskin made their first contribution in https://github.com/czernika/vue3-smart-captcha/pull/103
+
+**Full Changelog**: https://github.com/czernika/vue3-smart-captcha/compare/1.1.4...1.2.0
+
 ## 1.1.4 - 2025-06-27
 
 **Full Changelog**: https://github.com/czernika/vue3-smart-captcha/compare/1.1.3...1.1.4
