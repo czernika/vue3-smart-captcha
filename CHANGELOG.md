@@ -4,6 +4,10 @@
 
 **Full Changelog**: https://github.com/czernika/vue3-smart-captcha/compare/1.2.0...1.2.1
 
+The wrong version in npm? In 1.2.1 there are no changes to the domain with .NET on .RU
+https://www.npmjs.com/package/vue3-smart-captcha?activeTab=code
+```readonly SCRIPT_RENDER_ONLOAD_SRC = "https://smartcaptcha.yandexcloud.net/captcha.js?render=onload";```
+
 ## 1.2.0 - 2025-12-11
 
 ### What's Changed
